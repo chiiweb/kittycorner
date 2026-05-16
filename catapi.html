@@ -1,0 +1,745 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kitty corner</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-family='Arial'>🐱</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FFF8F0;
+    --peach: #FFD6B8;
+    --pink: #FFB3C6;
+    --rose: #FF8FAB;
+    --lavender: #D4BBFF;
+    --purple: #B388FF;
+    --mint: #B5EAD7;
+    --teal: #6EC6B2;
+    --yellow: #FFE082;
+    --orange: #FFB347;
+    --text-dark: #3D2C2C;
+    --text-med: #6B4F4F;
+    --text-light: #9B7878;
+    --white: #FFFFFF;
+    --shadow: rgba(180,120,120,0.18);
+  }
+
+  body {
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,179,198,0.22) 0%, transparent 42%),
+      radial-gradient(circle at 90% 80%, rgba(212,187,255,0.22) 0%, transparent 42%),
+      radial-gradient(circle at 50% 50%, rgba(181,234,215,0.15) 0%, transparent 60%);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 0 0 60px 0;
+    overflow-x: hidden;
+  }
+
+  header {
+    text-align: center;
+    padding: 44px 20px 28px;
+  }
+
+  .paw-deco {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 10px;
+    opacity: 0.35;
+    animation: sway 3s ease-in-out infinite;
+  }
+  .paw-deco i { font-size: 18px; color: var(--rose); }
+  .paw-deco i:nth-child(2n) { color: var(--purple); margin-top: 4px; }
+
+  @keyframes sway {
+    0%,100% { transform: translateX(0); }
+    50%      { transform: translateX(5px); }
+  }
+
+  h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    color: var(--rose);
+    letter-spacing: 1px;
+    line-height: 1.1;
+    text-shadow: 3px 3px 0 var(--peach);
+  }
+  h1 span { color: var(--purple); text-shadow: 3px 3px 0 var(--lavender); }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-top: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .stage {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ── ticker ── */
+  .ticker-wrap {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 18px var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ticker-cat-placeholder {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--peach);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: var(--rose);
+    border: none;
+    overflow: hidden;
+  }
+
+  .ticker-cat-placeholder img,
+  .ticker-cat-img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+    object-position: center;
+    border: none;
+    display: block;
+    flex-shrink: 0;
+    transition: opacity 0.3s;
+  }
+
+  .ticker-right { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+
+  .ticker-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.78rem;
+    color: var(--rose);
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .ticker-text {
+    font-size: 0.88rem;
+    color: var(--text-med);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    animation: fadeSlide 0.4s ease both;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .counter {
+    text-align: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 16px;
+  }
+
+  /* ── cat card ── */
+  .cat-card {
+    background: var(--white);
+    border-radius: 32px;
+    padding: 32px;
+    box-shadow: 0 12px 40px var(--shadow);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+    margin-bottom: 24px;
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    position: relative;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.9) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  @media (max-width: 620px) {
+    .cat-card { grid-template-columns: 1fr; }
+  }
+
+  /* ══════════════════════════════════════
+     FANCY MULTI-LAYER BORDER
+  ══════════════════════════════════════ */
+
+  .img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* layer 1 — spinning rainbow conic ring (outermost) */
+  .img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      var(--rose)     0%,
+      var(--orange)   14%,
+      var(--yellow)   28%,
+      var(--mint)     42%,
+      var(--teal)     55%,
+      var(--lavender) 68%,
+      var(--purple)   82%,
+      var(--pink)     92%,
+      var(--rose)     100%
+    );
+    animation: spinFwd 5s linear infinite;
+    z-index: 0;
+  }
+
+  /* layer 2 — white gap ring */
+  .img-wrap::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: var(--white);
+    z-index: 1;
+  }
+
+  /* layer 3 — counter-spinning dashed ring */
+  .img-ring {
+    position: absolute;
+    inset: -9px;
+    border-radius: 50%;
+    border: 2.5px dashed rgba(255,143,171,0.6);
+    z-index: 2;
+    animation: spinBack 9s linear infinite;
+  }
+
+  /* layer 4 — pulsing glow halo */
+  .img-glow {
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow:
+      0 0 0 4px rgba(255,179,198,0.55),
+      0 0 0 8px rgba(212,187,255,0.28),
+      0 0 28px 10px rgba(255,143,171,0.2);
+    animation: pulseGlow 2.6s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%,100% {
+      box-shadow: 0 0 0 4px rgba(255,179,198,0.55),
+                  0 0 0 8px rgba(212,187,255,0.28),
+                  0 0 28px 10px rgba(255,143,171,0.2);
+    }
+    50% {
+      box-shadow: 0 0 0 5px rgba(255,143,171,0.7),
+                  0 0 0 11px rgba(179,136,255,0.3),
+                  0 0 42px 14px rgba(179,136,255,0.25);
+    }
+  }
+
+  /* layer 5 — orbiting icon dots */
+  .img-orbits {
+    position: absolute;
+    inset: -16px;
+    border-radius: 50%;
+    z-index: 6;
+    animation: spinFwd 14s linear infinite;
+    pointer-events: none;
+  }
+
+  .orbit-dot {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px;
+    box-shadow: 0 2px 6px rgba(180,100,120,0.3);
+    animation: spinBack 14s linear infinite;
+  }
+  .orbit-dot i { color: var(--rose); }
+  .orbit-dot:nth-child(2n) i { color: var(--purple); }
+  .orbit-dot:nth-child(3n) i { color: var(--teal); }
+  .orbit-dot:nth-child(4n) i { color: var(--orange); }
+
+  .orbit-dot:nth-child(1) { top: 50%;    left: -10px;  transform: translateY(-50%); }
+  .orbit-dot:nth-child(2) { top: 13%;    left: 13%;    transform: translate(-50%,-50%); }
+  .orbit-dot:nth-child(3) { top: -10px;  left: 50%;    transform: translateX(-50%); }
+  .orbit-dot:nth-child(4) { top: 13%;    right: 13%;   transform: translate(50%,-50%); }
+  .orbit-dot:nth-child(5) { top: 50%;    right: -10px; transform: translateY(-50%); }
+  .orbit-dot:nth-child(6) { bottom: 13%; right: 13%;   transform: translate(50%,50%); }
+  .orbit-dot:nth-child(7) { bottom: -10px; left: 50%;  transform: translateX(-50%); }
+  .orbit-dot:nth-child(8) { bottom: 13%; left: 13%;    transform: translate(-50%,50%); }
+
+  @keyframes spinFwd { to { transform: rotate(360deg); } }
+  @keyframes spinBack { to { transform: rotate(-360deg); } }
+
+  /* actual image */
+  .cat-img {
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative;
+    z-index: 4;
+    background: var(--peach);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    display: block;
+  }
+  .cat-img:hover { transform: scale(1.04); }
+
+  .img-skeleton {
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    border-radius: 50%;
+    position: relative; z-index: 4;
+    background: linear-gradient(90deg, #f0e6e6 25%, #ffe0e0 50%, #f0e6e6 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; color: var(--rose);
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+
+  /* ── info panel ── */
+  .info-panel { display: flex; flex-direction: column; gap: 16px; padding-top: 4px; }
+
+  .breed-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--rose), var(--purple));
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    padding: 6px 20px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(255,143,171,0.4);
+  }
+
+  .origin-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--lavender); color: #6B3FA0;
+    font-size: 0.82rem; font-weight: 700;
+    padding: 4px 12px; border-radius: 99px;
+    width: fit-content;
+  }
+
+  .fact-box {
+    background: linear-gradient(135deg, #FFF0F7, #F0F0FF);
+    border-radius: 18px; padding: 18px;
+    border-left: 5px solid var(--rose);
+    position: relative; overflow: hidden;
+  }
+
+  .fact-label {
+    font-size: 0.72rem; font-weight: 800;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .fact-text {
+    font-size: 0.95rem; line-height: 1.65;
+    color: var(--text-med); font-weight: 600;
+  }
+
+  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .stat-chip {
+    background: var(--cream);
+    border: 2px solid var(--peach);
+    border-radius: 12px; padding: 8px 14px;
+    text-align: center; flex: 1; min-width: 70px;
+  }
+
+  .stat-chip .val {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem; color: var(--teal); display: block;
+  }
+
+  .stat-chip .lbl {
+    font-size: 0.68rem; font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+
+  .stat-chip:nth-child(3) .lbl,
+  .stat-chip:nth-child(4) .lbl {
+    margin-left: -6px;
+  }
+
+  .temp-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .temp-pill {
+    font-size: 0.78rem; font-weight: 700;
+    padding: 4px 12px; border-radius: 99px;
+    background: var(--mint); color: #2E7D65;
+  }
+  .temp-pill:nth-child(2n) { background: var(--yellow); color: #7A5C00; }
+  .temp-pill:nth-child(3n) { background: var(--lavender); color: #5B3A9B; }
+  .temp-pill:nth-child(4n) { background: var(--peach); color: #8B4A1A; }
+
+  /* ── button ── */
+  .btn-wrap { text-align: center; }
+
+  .btn-next {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem; letter-spacing: 0.5px;
+    padding: 16px 48px; border-radius: 99px; border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--rose), var(--purple));
+    color: white;
+    box-shadow: 0 6px 20px rgba(255,143,171,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-next:hover  { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 28px rgba(255,143,171,0.55); }
+  .btn-next:active { transform: scale(0.97); }
+  .btn-next:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  footer {
+    text-align: center; margin-top: 48px;
+    font-size: 0.8rem; color: var(--text-light); font-weight: 600;
+  }
+
+  .error-state {
+    text-align: center; padding: 40px;
+    color: var(--text-med); font-weight: 600;
+    font-size: 1rem; grid-column: 1/-1;
+  }
+  .error-state i { font-size: 2.5rem; display: block; margin-bottom: 12px; color: var(--rose); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="paw-deco">
+    <i class="fa-solid fa-paw"></i>
+    <i class="fa-solid fa-paw"></i>
+    <i class="fa-solid fa-paw"></i>
+    <i class="fa-solid fa-paw"></i>
+    <i class="fa-solid fa-paw"></i>
+  </div>
+  <h1>kitty <span>corner</span></h1>
+  <p class="subtitle">random cats &bull; amazing facts &bull; pure joy</p>
+</header>
+
+<div class="stage">
+
+  <div class="ticker-wrap">
+    <div class="ticker-cat-placeholder" id="ticker-img-wrap">
+      <img src="https://thumb.ac-illust.com/7b/7bb79fe03e5283995f0605b3da0c9474_t.jpeg" alt="did you know">
+    </div>
+    <div class="ticker-right">
+      <span class="ticker-label">
+        <i class="fa-solid fa-lightbulb" style="color:var(--orange)"></i>
+        did you know?
+      </span>
+      <span class="ticker-text" id="ticker">loading a little cat fact just for you...</span>
+    </div>
+  </div>
+
+  <p class="counter" id="counter">
+    <i class="fa-solid fa-cat" style="font-size:0.8rem;margin-right:4px;"></i> kitty #1
+  </p>
+
+  <div class="cat-card" id="cat-card">
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-light);font-size:1rem;font-weight:600;">
+      <i class="fa-solid fa-cat" style="font-size:2.5rem;display:block;margin-bottom:12px;color:var(--rose);"></i>
+      fetching your first kitty...
+    </div>
+  </div>
+
+  <div class="btn-wrap">
+    <button class="btn-next" id="btn-next" onclick="loadCat()">
+      <i class="fa-solid fa-paw"></i> show me another kitty
+    </button>
+  </div>
+
+</div>
+
+<footer>
+  <i class="fa-solid fa-heart" style="color:var(--rose);margin-right:4px;"></i>
+  made for cat lovers everywhere &bull; powered by thecatapi.com
+</footer>
+
+<script>
+  const API_KEY = 'live_JfFPIur61vagV5jB9qVs054ladfUI0lLPe73N6kSth2XabT2XvPJQ5SPunRLIi2I';
+
+  let catCount = 0;
+
+  const funFacts = [
+    "cats sleep 12 to 16 hours a day. honestly goals.",
+    "a group of cats is called a clowder!",
+    "cats have 32 muscles in each ear for maximum eavesdropping.",
+    "cats cannot taste sweetness — they have no sweet taste receptors.",
+    "a cat's purr vibrates at 25 to 150 hz, which can help heal bones.",
+    "cats have a special organ called jacobson's organ to smell with their mouth.",
+    "the oldest cat ever lived to 38 years old. an absolute legend.",
+    "cats walk like camels and giraffes — right feet then left feet.",
+    "indoor cats live 2 to 3 times longer than outdoor cats on average.",
+    "cats have 3 eyelids. the third is called a nictitating membrane.",
+    "a cat's nose print is as unique as a human fingerprint.",
+    "cats can rotate their ears 180 degrees like little radars.",
+    "cats spend around 30 percent of their awake time grooming themselves.",
+    "kittens cannot see or hear when they are first born.",
+    "cats have a specialized collarbone that allows them to squeeze through tight spaces.",
+    "a cat's jaw cannot move side to side, only up and down.",
+    "cats have over 200 million scent receptors in their nasal tissue.",
+    "a cat can jump up to 6 times its own length. parkour champions!",
+    "cats have a reflective layer in their eyes called the tapetum lucidum.",
+    "a cat's top speed is about 30 mph. they're basically tiny cheetahs.",
+    "cats make over 100 vocal sounds. dogs only make 10. we have a lot to say.",
+    "a cat's heart beats twice as fast as a human's heart.",
+    "cats spend about 70 percent of their lives asleep or in a daze.",
+    "a kitten's eyes are always blue at birth.",
+    "cats have a third eyelid called the nictating membrane that helps keep their eyes moist.",
+    "a cat can see in light levels six times lower than what a human needs.",
+    "cats cannot see red — they see the world in shades of blue and green.",
+    "a cat's body has 230 bones while humans have 206.",
+    "cats have specialized scent glands on their face to mark territory.",
+    "a cat can rotate its ears independently up to 180 degrees.",
+    "the turkish van cat is one of the few cat breeds that actually enjoys swimming.",
+    "a cat's meow is never directed at other cats, only at humans.",
+    "cats have a bone in their throat that vibrates to create a purr.",
+    "a cat's neck contains 53 vertebrae compared to 33 in humans.",
+    "cats are obligate carnivores and need meat to survive.",
+    "a cat's whiskers are highly sensitive and help them navigate their environment.",
+    "cats have a vomeronasal organ that detects pheromones.",
+    "a cat's vision is excellent at night and from the side.",
+    "cats sweat from their paw pads when stressed or hot.",
+    "a cat needs 9 essential amino acids that only meat provides.",
+  ];
+
+  let tickerIdx = 0;
+  let shownFacts = new Set();
+
+  function getNextFact() {
+    let availableFacts = funFacts.filter((_, i) => !shownFacts.has(i));
+    if (availableFacts.length === 0) {
+      shownFacts.clear();
+      availableFacts = funFacts;
+    }
+    const randomIdx = Math.floor(Math.random() * availableFacts.length);
+    const fact = availableFacts[randomIdx];
+    const originalIdx = funFacts.indexOf(fact);
+    shownFacts.add(originalIdx);
+    return fact;
+  }
+
+  function rotateTicker() {
+    const el = document.getElementById('ticker');
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = '';
+    el.textContent = getNextFact();
+  }
+  rotateTicker();
+  setInterval(rotateTicker, 5500);
+
+  function buildImgWrap(imgHTML) {
+    return `
+      <div class="img-wrap">
+        <div class="img-orbits">
+          <div class="orbit-dot"><i class="fa-solid fa-paw"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-star"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-paw"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-heart"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-paw"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-star"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-paw"></i></div>
+          <div class="orbit-dot"><i class="fa-solid fa-heart"></i></div>
+        </div>
+        <div class="img-ring"></div>
+        <div class="img-glow"></div>
+        ${imgHTML}
+      </div>`;
+  }
+
+  async function loadCat() {
+    const btn  = document.getElementById('btn-next');
+    const card = document.getElementById('cat-card');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> finding a kitty...';
+    catCount++;
+    document.getElementById('counter').innerHTML =
+      `<i class="fa-solid fa-cat" style="font-size:0.8rem;margin-right:4px;"></i> kitty #${catCount}`;
+
+    card.innerHTML =
+      buildImgWrap(`<div class="img-skeleton"><i class="fa-solid fa-cat"></i></div>`) +
+      `<div class="info-panel" style="gap:12px;">
+        ${['60%','40%','80%','50%'].map(w =>
+          `<div style="height:18px;background:linear-gradient(90deg,#f5eaea 25%,#ffe8e8 50%,#f5eaea 75%);background-size:200% 100%;border-radius:8px;width:${w};animation:shimmer 1.2s infinite;"></div>`
+        ).join('')}
+      </div>`;
+
+    try {
+      const res = await fetch(
+        'https://api.thecatapi.com/v1/images/search?has_breeds=1&size=med',
+        { headers: { 'x-api-key': API_KEY } }
+      );
+      const [cat] = await res.json();
+      const breed = cat?.breeds?.[0];
+      if (!breed) {
+        const r2 = await fetch('https://api.thecatapi.com/v1/images/search', { headers: { 'x-api-key': API_KEY } });
+        const [cat2] = await r2.json();
+        renderCat(cat2, null);
+      } else {
+        renderCat(cat, breed);
+      }
+    } catch(e) {
+      card.innerHTML = `<div class="error-state">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        could not fetch a kitty. please check your api key.
+      </div>`;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-paw"></i> show me another kitty';
+    card.style.animation = 'none';
+    card.offsetHeight;
+    card.style.animation = 'popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
+  }
+
+  function starBar(n, max) {
+    const numStars = Math.min(5, Math.max(0, parseInt(n) || 0));
+    return Array.from({length: max || 5}, function(_,i) {
+      return '<i class="fa-solid fa-star" style="color:' + (i < numStars ? 'var(--orange)' : '#e8d5d5') + ';font-size:12px;"></i>';
+    }).join('');
+  }
+
+  function renderCat(cat, breed) {
+    const card = document.getElementById('cat-card');
+
+    document.getElementById('ticker-img-wrap').innerHTML =
+      '<img src="https://thumb.ac-illust.com/7b/7bb79fe03e5283995f0605b3da0c9474_t.jpeg" alt="did you know" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+
+    const breedName = breed && breed.name ? breed.name : 'mystery kitty';
+    const origin    = breed && breed.origin ? breed.origin : 'unknown';
+    const desc      = breed && breed.description ? breed.description : 'this cutie is keeping their secrets. very mysterious. very chic.';
+    const life      = breed && breed.life_span ? breed.life_span + ' yrs' : '—';
+    const weight    = breed && breed.weight && breed.weight.metric ? breed.weight.metric + ' kg' : '—';
+    const indoor    = breed && breed.indoor
+      ? '<i class="fa-solid fa-house" style="font-size:0.8rem"></i> indoor'
+      : '<i class="fa-solid fa-tree"  style="font-size:0.8rem"></i> outdoor';
+    const tempers = ((breed && breed.temperament) ? breed.temperament : 'mysterious, fluffy, adorable').split(',').slice(0,5);
+    const adaptStars  = starBar(breed && breed.adaptability   ? breed.adaptability   : 3, 5);
+    const affectStars = starBar(breed && breed.affection_level ? breed.affection_level : 3, 5);
+    const shortDesc   = desc;
+
+    card.innerHTML =
+      buildImgWrap('<img class="cat-img" src="' + cat.url + '" alt="' + breedName + '" onload="this.style.opacity=1" style="opacity:0;transition:opacity 0.4s;" />') +
+      `<div class="info-panel">
+        <div><div class="breed-badge">${breedName}</div></div>
+
+        <div class="origin-tag">
+          <i class="fa-solid fa-earth-americas"></i> from ${origin} &nbsp;&bull;&nbsp; ${indoor}
+        </div>
+
+        <div class="fact-box">
+          <div class="fact-label">
+            <i class="fa-solid fa-book-open"></i> about this breed
+          </div>
+          <p class="fact-text">${shortDesc}</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-chip">
+            <span class="val">${life}</span>
+            <span class="lbl"><i class="fa-solid fa-heart-pulse"></i> lifespan</span>
+          </div>
+          <div class="stat-chip">
+            <span class="val">${weight}</span>
+            <span class="lbl"><i class="fa-solid fa-weight-scale"></i> weight</span>
+          </div>
+          <div class="stat-chip">
+            <span class="val" style="font-size:0.9rem;letter-spacing:-0.5px;">${adaptStars}</span>
+            <span class="lbl" style="margin-top:4px;"><i class="fa-solid fa-arrows-to-circle" style="font-size:0.7rem;"></i> adaptable</span>
+          </div>
+          <div class="stat-chip">
+            <span class="val" style="font-size:0.9rem;letter-spacing:-0.5px;">${affectStars}</span>
+            <span class="lbl" style="margin-top:4px;"><i class="fa-solid fa-heart" style="font-size:0.7rem;"></i> affection</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="fact-label" style="margin-bottom:8px;">
+            <i class="fa-solid fa-sparkles"></i> personality vibes
+          </div>
+          <div class="temp-wrap">
+            ${tempers.map(function(t){ return '<span class="temp-pill">' + t.trim() + '</span>'; }).join('')}
+          </div>
+        </div>
+      </div>`;
+
+    const img = card.querySelector('.cat-img');
+    if (img && img.complete) img.style.opacity = 1;
+  }
+
+  window.onload = function() { loadCat(); };
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
